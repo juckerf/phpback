@@ -112,13 +112,8 @@ class Action extends CI_Controller{
 
     public function vote($votes, $ideaid){
         session_start();
-        if(isset($_SESSION['phpback_userid'])){
-            $this->post->vote($ideaid, $_SESSION['phpback_userid'], $votes);
-        }
-        else{
-            header("Location: " . base_url() . 'home/login/');
-            exit;
-        }
+        $userid = $this->getCurrentUserId();
+        $this->post->vote($ideaid, $userid, $votes);
         $idea = $this->get->getIdea($ideaid);
         header("Location: " . base_url() . 'home/idea/' . $ideaid . '/' . Display::slugify($idea->title));
     }
@@ -182,10 +177,6 @@ class Action extends CI_Controller{
     }
     public function newidea(){
         session_start();
-        if(!isset($_SESSION['phpback_userid'])){
-            header('Location: ' . base_url() . 'home');
-            exit;
-        }
         $title = $this->input->post('title', true);
         $desc = $this->input->post('description', true);
         $catid = $this->input->post('category', true);
@@ -201,8 +192,8 @@ class Action extends CI_Controller{
             $this->redirectpost(base_url() . "home/postidea/errordesc", array('title' => $title, 'desc' => $desc, 'catid' => $catid));
             return;
         }
-        if(@isset($_SESSION['phpback_userid']))
-            $this->post->add_idea($title, $desc, $_SESSION['phpback_userid'], $catid);
+        $userid = $this->getCurrentUserId();
+        $this->post->add_idea($title, $desc, $userid, $catid);
         header("Location: " . base_url() . "home/profile/" . $_SESSION['phpback_userid']);
     }
 
@@ -210,19 +201,27 @@ class Action extends CI_Controller{
         session_start();
         $idea_id = (int) $idea_id;
         $content = $this->input->post('content', true);
-        if(isset($_SESSION['phpback_userid']))
-            $this->post->add_comment($idea_id, $content, $_SESSION['phpback_userid']);
+        $userid = $this->getCurrentUserId();
+        $this->post->add_comment($idea_id, $content, $userid);
         header("Location: " . base_url() . "home/idea/" . $idea_id . '/' .  $this->input->post('ideaname', true));
     }
 
     public function flag($cid, $ideaid, $ideaname){
         session_start();
-        if(!isset($_SESSION['phpback_userid'])){
-            header("Location: " . base_url(). "home/login");
-            exit;
-        }
-        $this->post->flag($cid, $_SESSION['phpback_userid']);    
+        $userid = $this->getCurrentUserId();
+        $this->post->flag($cid, $userid);    
         header("Location: " . base_url() . "home/idea/" . $ideaid . '/' .  $ideaname);
+    }
+
+    // TODO: Relocate to helper
+    private function getCurrentUserId(){
+        if(isset($_SESSION['phpback_userid'])){
+            return $_SESSION['phpback_userid'];
+        }
+        else{
+            return PHPBACK_ANONYMOUS_ID;
+        }
+
     }
 
     private function redirectpost($url, array $data){

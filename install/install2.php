@@ -39,6 +39,9 @@ $mysql->multi_query("INSERT INTO `settings` (`name`, `value`) VALUES
 ('smtp-user', '". $_POST['smtp-user'] ."'),
 ('smtp-pass', '". $_POST['smtp-password'] ."');");
 
+$mysql->multi_query("INSERT INTO `users` (`id`, `name`, `pass`, `votes`) VALUES
+(2, 'anonymous', '', 1);");
+
 if(unlink('index2.php') && unlink('install2.php')) {
     header('Location: ../admin');
 } else {
