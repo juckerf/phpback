@@ -3,9 +3,9 @@
         <li><a href="<?php echo base_url();?>">Feedback</a></li>
         <li class="active"><?php echo $lang['label_post_new_idea']; ?></li>
   </ol></small>
-	<?php if(@!isset($_SESSION['phpback_userid'])): ?>
-	<p class="bg-danger" style="padding-left:20px;padding-top:5px;padding-bottom:5px;"><?php echo $lang['error_login_to_post']; ?></p>
-	<?php else: ?>
+    <?php if(false): //@!isset($_SESSION['phpback_userid']) ?>
+    <p class="bg-danger" style="padding-left:20px;padding-top:5px;padding-bottom:5px;"><?php echo $lang['error_login_to_post']; ?></p>
+    <?php else: ?>
 	<?php if($error != "none"): ?>
 	<p class="bg-danger" style="padding-left:20px;padding-top:5px;padding-bottom:5px;"><?php
 	switch ($error) {
@@ -19,7 +19,7 @@
 			echo $lang['error_description'];
 			break;
 	}?></p>
-	<?php endif; ?>
+    <?php endif; ?>
 	<form name="post-idea-form" method="post" action="<?php echo base_url() . 'action/newidea'?>">
 	  <div class="form-group">
 	    <label for="exampleInputEmail1"><?php echo $lang['label_idea_title']; ?></label>

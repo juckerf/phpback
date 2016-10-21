@@ -120,7 +120,8 @@ class Post extends CI_Model
 		   			'number' => $votes,
 				);
                 $this->db->insert('votes', $data);
-                $this->update_by_id('users','votes', $USER->votes - $votes, $USER->id);
+                if($USER->id!=PHPBACK_ANONYMOUS_ID)
+                    $this->update_by_id('users','votes', $USER->votes - $votes, $USER->id);
                 $this->update_by_id('ideas', 'votes', $idea->votes + $votes, $idea_id);
                 $this->log(str_replace(array('%s1', '%s2'), array("#$idea_id", $votes), $this->lang->language['log_idea_voted']), "user", $user_id);
                 return true;
@@ -128,11 +129,15 @@ class Post extends CI_Model
             else return false;
         }
         else{
-            $array = $sql->row();
-            if($USER->votes + $array->number >= $votes){
-                $this->update_by_id('votes', 'number', $votes, $array->id);
-                $this->update_by_id('users', 'votes', $USER->votes - ($votes - $array->number), $user_id);
-                $this->update_by_id('ideas', 'votes', $idea->votes + ($votes - $array->number), $idea_id);
+            $userVotesOnIdea = $sql->row();
+            if($USER->votes + $userVotesOnIdea->number >= $votes){
+                $this->update_by_id('votes', 'number', $votes, $userVotesOnIdea->id);
+                if($USER->id!=PHPBACK_ANONYMOUS_ID){
+                    $this->update_by_id('users', 'votes', $USER->votes - ($votes - $userVotesOnIdea->number), $user_id);
+                    $this->update_by_id('ideas', 'votes', $idea->votes + ($votes - $userVotesOnIdea->number), $idea_id);
+                } else {
+                    $this->update_by_id('ideas', 'votes', $idea->votes + $votes, $idea_id);
+                }
                 return true;
             }
             else return false;

@@ -123,7 +123,7 @@
 			</div>
 			<?php endif; ?>
 			
-			<?php if(isset($_SESSION['phpback_userid'])): ?>
+			<?php //if(isset($_SESSION['phpback_userid'])): ?>
 			<div class="row">
 				<div class="col-md-10 col-md-offset-2" style="margin-top:10px">
 					<form role="form" method="post" action="<?php echo base_url() . 'action/comment/' . $idea->id; ?>">
@@ -136,7 +136,7 @@
 					</form>
 				</div>
 			</div>
-			<?php endif; ?>
+			<?php //endif; ?>
 			
 			<?php foreach ($comments as $comment) : ?>
 			<div class="row">
